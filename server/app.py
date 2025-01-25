@@ -21,9 +21,6 @@ api = Api(app)
 @app.route("/")
 def index():
     return "<h1>Code Challenge</h1>"
-
-
-# Resource: GET /restaurants
 class Restaurants(Resource):
     def get(self):
         restaurants = Restaurant.query.all()
@@ -33,8 +30,6 @@ class RestaurantById(Resource):
         restaurant = db.session.get(Restaurant, id)
         if not restaurant:
             return {"error": "Restaurant not found"}, 404
-        
-        # Manually build the response data
         data = restaurant.to_dict()
         data["restaurant_pizzas"] = [
             {
@@ -50,7 +45,6 @@ class RestaurantById(Resource):
         ]
         return data, 200
 
-
     def delete(self, id):
         restaurant = db.session.get(Restaurant, id)
         if restaurant:
@@ -59,14 +53,10 @@ class RestaurantById(Resource):
             return make_response("", 204)
         return {"error": "Restaurant not found"}, 404
 
-
-# Resource: GET /pizzas
 class Pizzas(Resource):
     def get(self):
         pizzas = Pizza.query.all()
         return [pizza.to_dict() for pizza in pizzas], 200
-
-# Resource: POST /restaurant_pizzas
 class RestaurantPizzas(Resource):
     def post(self):
         data = request.get_json()
@@ -99,7 +89,6 @@ class RestaurantPizzas(Resource):
         except Exception as e:
             return {"errors": ["validation errors"]}, 500
 
-# Register routes
 api.add_resource(Restaurants, "/restaurants")
 api.add_resource(RestaurantById, "/restaurants/<int:id>")
 api.add_resource(Pizzas, "/pizzas")
